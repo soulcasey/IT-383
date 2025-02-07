@@ -1,11 +1,14 @@
-# Project Title: Hyper Arena
+## Project Title: Hyper Arena
 
-Group Members: Casey Cha
+### Group Members
+* Casey Cha
 
-Platform: VR
+### Platform: VR
+* Hardware Requirements: Oculus Quest 2
 
-Hardware Requirements: Oculus Quest 2
+### Target Audience/Users
+* Young ~ middle age student group
 
-Target Audience/Users: Young ~ middle age student group
-
-Game Synopsis: Hyper Arena is a fast-paced multiplayer VR shooter where players compete in dynamic minigame rounds, each with unique ways to earn points.
+### Game Synopsis
+* Hyper Arena is a fast-paced multiplayer VR shooter where players compete in dynamic minigame rounds.
+* A random minigame will be chosen at the beginning of the game, each with unique ways to earn points.
