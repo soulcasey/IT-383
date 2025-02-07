@@ -21,7 +21,7 @@
 * All players control a single default character
 
 ### Customization/Upgrades
-* Players can choose their preferred weapon, each offering a unique playstyle
+* A random weapon will be selected for everyone at the beginning of the game
   * Double pistol
   * Assault Rifle
   * Grenade launcher
