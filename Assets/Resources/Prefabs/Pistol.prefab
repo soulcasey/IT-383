@@ -327,6 +327,37 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &1834898534393355918
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4821976566329848181}
+  m_Layer: 0
+  m_Name: Muzzle
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4821976566329848181
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1834898534393355918}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.0981, z: 0.2033}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4107158872966403098}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2803979234032390186
 GameObject:
   m_ObjectHideFlags: 0
@@ -491,6 +522,7 @@ GameObject:
   - component: {fileID: 7247776181074841664}
   - component: {fileID: 4105383836623880920}
   - component: {fileID: 7699293973623551596}
+  - component: {fileID: 5279497174804083280}
   m_Layer: 0
   m_Name: Pistol
   m_TagString: Untagged
@@ -513,6 +545,7 @@ Transform:
   m_Children:
   - {fileID: 2220373591294667904}
   - {fileID: 943642283356718880}
+  - {fileID: 4821976566329848181}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &7247776181074841664
@@ -685,6 +718,26 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.04, y: 0.21, z: 0.39}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5279497174804083280
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5738231276373014281}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e15e22ed2e9a6a443ab7f35c4a2ae56a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gunType: 0
+  fireRate: 0
+  firePoint: {fileID: 4821976566329848181}
+  range: 100
+  hitLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  grabInteractable: {fileID: 4105383836623880920}
 --- !u!1 &6263789824318746177
 GameObject:
   m_ObjectHideFlags: 0
