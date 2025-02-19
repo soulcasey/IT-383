@@ -15,9 +15,9 @@ public class Gun: MonoBehaviour
 {
     public GunType gunType;
     public float fireRate;
-    public Transform firePoint; // The point from where the bullet is shot
+    public Transform muzzle;
     public float range = 100f;
-    public LayerMask hitLayers;
+    public TrailRenderer trace;
     public XRGrabInteractable grabInteractable;
 
     private void Start()
@@ -45,15 +45,29 @@ public class Gun: MonoBehaviour
 
     private void Shoot()
     {
-        RaycastHit hit;
-        if (Physics.Raycast(firePoint.position, firePoint.forward, out hit, range, hitLayers))
+        trace.Clear();
+        trace.AddPosition(muzzle.transform.position);
+
+        if (Physics.Raycast(muzzle.position, muzzle.forward, out RaycastHit hit, range))
         {
-            Debug.DrawLine(firePoint.position, hit.point, Color.red, 0.1f);
+            Debug.DrawLine(muzzle.position, hit.point, Color.red, 0.1f);
             Debug.Log("Hit: " + hit.collider.name);
+            trace.AddPosition(hit.point);
         }
         else
         {
-            Debug.DrawLine(firePoint.position, firePoint.position + firePoint.forward * range, Color.green, 0.1f);
+            Vector3 targetPosition = muzzle.position + muzzle.forward * range;
+            Debug.DrawLine(muzzle.position, muzzle.position + muzzle.forward * range, Color.green, 0.1f);
+            trace.AddPosition(transform.position = targetPosition);
+        }
+    }
+
+    // Test
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            Shoot();
         }
     }
 }
