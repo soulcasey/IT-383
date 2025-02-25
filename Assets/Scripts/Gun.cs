@@ -77,12 +77,12 @@ public class Gun : MonoBehaviour
             {
                 if (grenade != null)
                 {
-                    audioSource.Play();
                     grenade.Explode();
                 }
                 else if (canShoot == true)
                 {
-                    StartCoroutine(ShootCooldown());
+                    Launch();
+                    StartCoroutine(StartCooldown());
                 }
                 break;
             }
@@ -90,7 +90,8 @@ public class Gun : MonoBehaviour
             {
                 if (canShoot == true)
                 {
-                    StartCoroutine(ShootCooldown());
+                    Shoot();
+                    StartCoroutine(StartCooldown());
                 }
                 break;
             }
@@ -99,7 +100,7 @@ public class Gun : MonoBehaviour
 
     private void OnGunDeactivated(DeactivateEventArgs args)
     {
-        if (gunType == GunType.Rifle && fireCoroutine != null)
+        if (fireCoroutine != null)
         {
             StopCoroutine(fireCoroutine);
             fireCoroutine = null;
@@ -115,10 +116,9 @@ public class Gun : MonoBehaviour
         }
     }
 
-    private IEnumerator ShootCooldown()
+    private IEnumerator StartCooldown()
     {
         canShoot = false;
-        Shoot();
         yield return new WaitForSeconds(1f / fireRate);
         canShoot = true;
     }
@@ -127,33 +127,32 @@ public class Gun : MonoBehaviour
     {
         audioSource.Play();
 
-        if (trailRenderer != null)
+        TrailRenderer trail = Instantiate(trailRenderer, muzzle.position, Quaternion.identity);
+        trail.AddPosition(muzzle.position);
+
+        if (Physics.Raycast(muzzle.position, muzzle.forward, out RaycastHit hit, RANGE))
         {
-            TrailRenderer trail = Instantiate(trailRenderer, muzzle.position, Quaternion.identity);
-            trail.AddPosition(muzzle.position);
+            Debug.DrawLine(muzzle.position, hit.point, Color.red, 0.1f);
+            Debug.Log("Hit: " + hit.collider.name);
+            trail.AddPosition(hit.point);
 
-            if (Physics.Raycast(muzzle.position, muzzle.forward, out RaycastHit hit, RANGE))
+            if (hit.collider.TryGetComponent(out IDamageable damageable) == true)
             {
-                Debug.DrawLine(muzzle.position, hit.point, Color.red, 0.1f);
-                Debug.Log("Hit: " + hit.collider.name);
-                trail.AddPosition(hit.point);
-
-                if (hit.collider.TryGetComponent(out IDamageable damageable) == true)
-                {
-                    damageable.OnHit(damage);
-                }
-            }
-            else
-            {
-                Vector3 targetPosition = muzzle.position + muzzle.forward * RANGE;
-                Debug.DrawLine(muzzle.position, targetPosition, Color.green, 0.1f);
-                trail.AddPosition(targetPosition);
+                damageable.OnHit(damage);
             }
         }
         else
         {
-            grenade = Grenade.Create(damage, muzzle.transform);
-            grenade.Launch(launchForce, muzzle.forward);
+            Vector3 targetPosition = muzzle.position + muzzle.forward * RANGE;
+            Debug.DrawLine(muzzle.position, targetPosition, Color.green, 0.1f);
+            trail.AddPosition(targetPosition);
         }
+    }
+
+    private void Launch()
+    {
+        audioSource.Play();
+        grenade = Grenade.Create(damage, muzzle.transform);
+        grenade.Launch(launchForce, muzzle.forward);
     }
 }
