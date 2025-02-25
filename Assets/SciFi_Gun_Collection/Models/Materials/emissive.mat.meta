@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: dec79994033cc2d428f93ed3908530cf
+timeCreated: 1455193755
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 56350
+  packageName: Scifi Gun Collection
+  packageVersion: 1.0
+  assetPath: Assets/SciFi_Gun_Collection/Models/Materials/emissive.mat
+  uploadId: 103527

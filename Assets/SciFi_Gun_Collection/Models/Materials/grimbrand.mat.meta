@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: c9c44ad1bbde38b4ca221ccfa98530ff
+timeCreated: 1455193755
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 56350
+  packageName: Scifi Gun Collection
+  packageVersion: 1.0
+  assetPath: Assets/SciFi_Gun_Collection/Models/Materials/grimbrand.mat
+  uploadId: 103527
