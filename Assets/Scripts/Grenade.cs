@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class Grenade : MonoBehaviour
 {
@@ -7,17 +8,17 @@ public class Grenade : MonoBehaviour
 
     public float explosionRadius = 5f;
 
+    private Coroutine autoCoroutine;
     private float damage = 0;
-    public float lifeTime = 5f; // Auto-destroy after some time
     private const string PREFAB_DIRECTORY = "Prefabs/Grenade";
-
-    private void Start()
-    {
-        Destroy(gameObject, lifeTime);
-    }
+    private const float AUTO_DESTROY_DELAY = 5f;
 
     private void OnCollisionEnter(Collision collision)
     {
+        if (collision.gameObject.TryGetComponent(out Gun _) == true)
+        {
+            return;
+        }
         Explode();
     }
 
@@ -30,11 +31,26 @@ public class Grenade : MonoBehaviour
 
     public void Launch(float force, Vector3 direction)
     {
+        Debug.Log("Launch");
         rb.AddForce(direction * force);
+        autoCoroutine = StartCoroutine(AutoExplode());
+    }
+
+    private IEnumerator AutoExplode()
+    {
+        yield return new WaitForSeconds(AUTO_DESTROY_DELAY);
+        Explode();
     }
 
     public void Explode()
     {
+        Debug.Log("Explode");
+
+        if (autoCoroutine != null)
+        {
+            StopCoroutine(autoCoroutine);
+        }
+
         if (explosionEffect != null)
         {
             Instantiate(explosionEffect, transform.position, Quaternion.identity);

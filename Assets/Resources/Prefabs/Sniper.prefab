@@ -229,6 +229,7 @@ MonoBehaviour:
   audioSource: {fileID: 7633330373637930290}
   fireRate: 2
   damage: 10
+  launchForce: 0
 --- !u!82 &7633330373637930290
 AudioSource:
   m_ObjectHideFlags: 0
@@ -242,7 +243,7 @@ AudioSource:
   m_audioClip: {fileID: 8300000, guid: b449d2fef7386244a8afc242c8e0f41f, type: 3}
   m_Resource: {fileID: 8300000, guid: b449d2fef7386244a8afc242c8e0f41f, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 0
   Mute: 0
