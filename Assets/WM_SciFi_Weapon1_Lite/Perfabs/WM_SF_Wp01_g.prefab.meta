@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 48164cc44c2ad934ab415432ded30d61
+timeCreated: 1543568700
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 134423
+  packageName: Weapon Master-SciFi Weapon.1 Lite
+  packageVersion: 1.0
+  assetPath: Assets/WM_SciFi_Weapon1_Lite/Perfabs/WM_SF_Wp01_g.prefab
+  uploadId: 281450

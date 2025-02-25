@@ -9,7 +9,8 @@ public enum GunType
 {
     Pistol,
     Sniper,
-    Rifle
+    Rifle,
+    Launcher
 }
 
 public class Gun : MonoBehaviour
@@ -22,9 +23,11 @@ public class Gun : MonoBehaviour
 
     public float fireRate;
     public float damage;
+    public float launchForce;
 
     private Coroutine fireCoroutine;
     private bool canShoot = true;
+    private Grenade grenade;
 
     private const int RANGE = 100;
 
@@ -38,12 +41,11 @@ public class Gun : MonoBehaviour
 
     private void OnGrabStarted(SelectEnterEventArgs args)
     {
-        Debug.Log("Grabbed");
+
     }
 
     private void OnGrabEnded(SelectExitEventArgs args)
     {
-        Debug.Log("Released");
         if (fireCoroutine != null)
         {
             StopCoroutine(fireCoroutine);
@@ -53,8 +55,6 @@ public class Gun : MonoBehaviour
 
     private void OnGunActivated(ActivateEventArgs args)
     {
-        Debug.Log("Press Trigger");
-        
         switch (gunType)
         {
             case GunType.Rifle:
@@ -65,12 +65,28 @@ public class Gun : MonoBehaviour
                 }
                 break;
             }
-
+            case GunType.Launcher:
+            {
+                if (grenade != null)
+                {
+                    audioSource.Play();
+                    grenade.Explode();
+                }
+                else if (canShoot == true)
+                {
+                    grenade = Grenade.Create(damage, muzzle.transform);
+                    grenade.Launch(launchForce, muzzle.forward);
+                    audioSource.Play();
+                    StartCoroutine(ShootCooldown());
+                }
+                break;
+            }
             default:
             {
                 if (canShoot == true)
                 {
-                    StartCoroutine(SingleShotCooldown());
+                    Shoot();
+                    StartCoroutine(ShootCooldown());
                 }
                 break;
             }
@@ -79,8 +95,6 @@ public class Gun : MonoBehaviour
 
     private void OnGunDeactivated(DeactivateEventArgs args)
     {
-        Debug.Log("Release Trigger");
-
         if (gunType == GunType.Rifle && fireCoroutine != null)
         {
             StopCoroutine(fireCoroutine);
@@ -97,10 +111,9 @@ public class Gun : MonoBehaviour
         }
     }
 
-    private IEnumerator SingleShotCooldown()
+    private IEnumerator ShootCooldown()
     {
         canShoot = false;
-        Shoot();
         yield return new WaitForSeconds(1f / fireRate);
         canShoot = true;
     }
@@ -118,11 +131,9 @@ public class Gun : MonoBehaviour
             Debug.Log("Hit: " + hit.collider.name);
             trail.AddPosition(hit.point);
 
-            IDamageable damageable = hit.collider.GetComponent<IDamageable>();
-            if (damageable != null)
+            if (hit.collider.TryGetComponent(out IDamageable damageable) == true)
             {
-                damageable.OnHit(damage); // Call interface method
-                Debug.Log("Hit object is damageable!");
+                damageable.OnHit(damage);
             }
         }
         else
