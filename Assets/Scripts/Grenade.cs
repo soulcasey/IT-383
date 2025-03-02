@@ -3,10 +3,9 @@ using System.Collections;
 
 public class Grenade : MonoBehaviour
 {
-    public GameObject explosionEffect;
     public Rigidbody rb;
 
-    public float explosionRadius = 5f;
+    public float explosionRadius = 2.5f;
 
     private Coroutine autoCoroutine;
     private float damage = 0;
@@ -51,10 +50,7 @@ public class Grenade : MonoBehaviour
             StopCoroutine(autoCoroutine);
         }
 
-        if (explosionEffect != null)
-        {
-            Instantiate(explosionEffect, transform.position, Quaternion.identity);
-        }
+        Explosion.Create(transform);
 
         Collider[] colliders = Physics.OverlapSphere(transform.position, explosionRadius);
         foreach (Collider nearbyObject in colliders)

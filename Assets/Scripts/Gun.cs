@@ -29,6 +29,8 @@ public class Gun : MonoBehaviour
     private bool canShoot = true;
     private Grenade grenade;
 
+    private int grabCount = 0;
+
     private const int RANGE = 100;
 
     private void Start()
@@ -41,11 +43,13 @@ public class Gun : MonoBehaviour
 
     private void OnGrabStarted(SelectEnterEventArgs args)
     {
-
+        grabCount ++;
     }
 
     private void OnGrabEnded(SelectExitEventArgs args)
     {
+        grabCount --;
+
         if (fireCoroutine != null)
         {
             StopCoroutine(fireCoroutine);
@@ -53,16 +57,19 @@ public class Gun : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space) && gunType == GunType.Launcher)
-        {
-            OnGunActivated(null);
-        }   
-    }
+    // TestCode
+    // private void Update()
+    // {
+    //     if (Input.GetKeyDown(KeyCode.Space) && gunType == GunType.Launcher)
+    //     {
+    //         OnGunActivated(null);
+    //     }   
+    // }
 
     private void OnGunActivated(ActivateEventArgs args)
     {
+        if (IsGrabCount() == false) return;
+
         switch (gunType)
         {
             case GunType.Rifle:
@@ -96,6 +103,11 @@ public class Gun : MonoBehaviour
                 break;
             }
         }
+    }
+
+    private bool IsGrabCount()
+    {
+        return gunType == GunType.Pistol ? grabCount == 1 : grabCount == 2;
     }
 
     private void OnGunDeactivated(DeactivateEventArgs args)
