@@ -5,7 +5,7 @@ public class Grenade : MonoBehaviour
 {
     public Rigidbody rb;
 
-    public float explosionRadius = 2.5f;
+    public float explosionRadius = 1.25f;
 
     private Coroutine autoCoroutine;
     private float damage = 0;
