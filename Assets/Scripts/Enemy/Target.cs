@@ -10,6 +10,11 @@ public class Target : MonoBehaviour, IDamageable
     private Outline outline;
     private Coroutine outlineCoroutine;
 
+    public GameObject pointA;
+    public GameObject pointB;
+    public float speed = 1f;
+    private float t;
+
     private void Start()
     {
         currentHealth = maxHealth;
@@ -56,4 +61,22 @@ public class Target : MonoBehaviour, IDamageable
     {
         OnHit(10);
     }
+
+    // Test,l
+    private void Update()
+    {
+        MoveBetweenPoints();
+    }
+
+    private void MoveBetweenPoints()
+    {
+        if (pointA == null || pointB == null)
+        {
+            return;
+        }
+
+        t += Time.deltaTime * speed;
+        transform.position = Vector3.Lerp(pointA.transform.position, pointB.transform.position, Mathf.PingPong(t, 1f));
+    }
+
 }
