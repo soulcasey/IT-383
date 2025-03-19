@@ -845,7 +845,7 @@ MonoBehaviour:
   m_RotationFollowMode: 2
   m_MinAngleAllowed: 0.1
   m_MaxAngleAllowed: 5
-  m_TimeUntilThresholdReachesMaxAngle: 3
+  m_TimeUntilThresholdReachesMaxAngle: 1
 --- !u!114 &6784559528670081568
 MonoBehaviour:
   m_ObjectHideFlags: 0
