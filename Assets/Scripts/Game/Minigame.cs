@@ -5,7 +5,7 @@ public enum MinigameType
     ShootAnimal,
     // FastTargetShooting,
     // MemoryShoot,
-    // QuickDrawDuel
+    QuickDraw
 }
 
 public abstract class Minigame : MonoBehaviour
