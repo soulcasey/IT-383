@@ -10,16 +10,12 @@ public class GameManager : SingletonBase<GameManager>
     public Minigame ActiveMinigame { get; private set; }
     public GunType ActiveGunType { get; private set; }
 
-    public Button startButton;
-    
-    // Textscreen
-    public TextMeshProUGUI screenText;
-    private Coroutine screenTextCoroutine;
+    public Screen screen;
     private const string NEW_ROUND_ANNOUNCEMENT_TEMPLATE = "Minigame: {0}!\nGun: {1}";
 
     private void Start()
     {
-        startButton.onClick.AddListener(() => StartNewRound());
+        screen.startButton.onClick.AddListener(() => StartNewRound());
     }
 
 
@@ -42,20 +38,8 @@ public class GameManager : SingletonBase<GameManager>
         ActiveMinigame = null;
     }
 
-    public void SetScreenText(string text, int time)
+    public void SetScreenText(string text, float time)
     {
-        if (screenTextCoroutine != null)
-        {
-            StopCoroutine(screenTextCoroutine);
-        }
-
-        screenTextCoroutine = StartCoroutine(ScreenTextCoroutine(text, time));
-    }
-
-    private IEnumerator ScreenTextCoroutine(string text, int time)
-    {
-        screenText.text = text;
-        yield return new WaitForSeconds(time);
-        screenText.text = string.Empty;
+        screen.SetScreenText(text, time);
     }
 }
