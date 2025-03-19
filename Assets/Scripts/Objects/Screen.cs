@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -13,33 +14,37 @@ public class Screen : MonoBehaviour
     private Coroutine screenTextCoroutine;
     
     private const float MOVE_SPEED = 1f;
-    private const float BOUDNARY = 0.01f;
+    private const float BOUDNARY = 0.05f;
 
-    public void Move(Vector3 destination)
+    public void Move(Vector3 destination, Action onComplete = null)
     {
         if (moveCoroutine != null)
         {
             StopCoroutine(moveCoroutine);
         }
 
-        moveCoroutine = StartCoroutine(MoveCoroutine(destination));
+       moveCoroutine = StartCoroutine(MoveCoroutine(destination, onComplete));
     }
 
-    private IEnumerator MoveCoroutine(Vector3 destination)
+    private IEnumerator MoveCoroutine(Vector3 destination, Action onComplete = null)
     {
-        while(Vector3.Distance(transform.position, destination) >= BOUDNARY)
+        while (Vector3.Distance(transform.position, destination) >= BOUDNARY)
         {
-            transform.position += (transform.position - destination).normalized * MOVE_SPEED;
+            transform.position += MOVE_SPEED * Time.deltaTime * (destination - transform.position).normalized;
 
             yield return null;
         }
 
         transform.position = destination;
+
+        onComplete?.Invoke();
     }
 
     
     public void SetScreenText(string text, float time)
     {
+        ShowTitle(false);
+
         if (screenTextCoroutine != null)
         {
             StopCoroutine(screenTextCoroutine);
