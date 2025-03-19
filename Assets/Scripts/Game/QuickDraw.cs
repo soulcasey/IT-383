@@ -84,14 +84,7 @@ public class QuickDraw : Minigame
     {
         StopCoroutine(waitCoroutine);
 
-        if (drawQueue.Peek() == DrawType.Shoot)
-        {
-            // Win
-        }
-        else
-        {
-            // Lose
-        }
+        Result = drawQueue.Peek() == DrawType.Shoot ? MiniGameResult.Win : MiniGameResult.Lose;
 
         EndMiniGame();
     }
