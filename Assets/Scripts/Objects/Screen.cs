@@ -6,7 +6,6 @@ using UnityEngine.UI;
 // TODO: Change move to tween
 public class Screen : MonoBehaviour
 {
-    
     public GameObject titleText;
     public TextMeshProUGUI screenText;
     public Button startButton;
