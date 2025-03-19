@@ -30,7 +30,7 @@ public class QuickDraw : Minigame
     private readonly (int min, int max) WAIT_COUNT = new (5, 15);  
     private readonly (float min, float max) GAP_TIME = new (0.5f, 3f); 
     
-    public override void Start()
+    public override void StartMiniGame()
     {
         drawQueue.Clear();
 
@@ -49,9 +49,9 @@ public class QuickDraw : Minigame
         waitCoroutine = StartCoroutine(WaitCoroutine());
     }
 
-    public override void End()
+    public override void EndMiniGame()
     {
-         GameManager.Instance.SetScreenText("GAME OVER", TEXT_DISPLAY_TIME);
+        GameManager.Instance.screen.SetScreenText("GAME OVER", TEXT_DISPLAY_TIME);
     }
 
     private IEnumerator WaitCoroutine()
@@ -68,7 +68,7 @@ public class QuickDraw : Minigame
                 _ => string.Empty
             };
 
-            GameManager.Instance.SetScreenText(displayText, TEXT_DISPLAY_TIME);
+            GameManager.Instance.screen.SetScreenText(displayText, TEXT_DISPLAY_TIME);
 
             float gapTime = currentDrawType == DrawType.Shoot ? COUNTDOWN_TIME : TEXT_DISPLAY_TIME + UnityEngine.Random.Range(GAP_TIME.min, GAP_TIME.max);
 
@@ -77,7 +77,7 @@ public class QuickDraw : Minigame
             drawQueue.Dequeue();
         }
 
-        End();
+        EndMiniGame();
     }
 
     private void OnShoot()
@@ -93,6 +93,6 @@ public class QuickDraw : Minigame
             // Lose
         }
 
-        End();
+        EndMiniGame();
     }
 }

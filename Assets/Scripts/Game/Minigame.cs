@@ -11,6 +11,6 @@ public enum MinigameType
 public abstract class Minigame : MonoBehaviour
 {
     public abstract MinigameType MinigameType { get; }
-    public abstract void Start();
-    public abstract void End();
+    public abstract void StartMiniGame();
+    public abstract void EndMiniGame();
 }

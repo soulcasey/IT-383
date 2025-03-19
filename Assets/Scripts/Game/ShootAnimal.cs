@@ -16,7 +16,7 @@ public class ShootAnimal : Minigame
 
     private const string ANNOUNCEMENT_TEMPLATE = "Target the {0}!";
     
-    public override void Start()
+    public override void StartMiniGame()
     {
         SetRandomTargetType();
     }
@@ -24,10 +24,10 @@ public class ShootAnimal : Minigame
     private void SetRandomTargetType()
     {
         CurrentTargetType = (TargetType)UnityEngine.Random.Range(0, Enum.GetValues(typeof(TargetType)).Length);
-        GameManager.Instance.SetScreenText(string.Format(ANNOUNCEMENT_TEMPLATE, CurrentTargetType), 5);
+        // GameManager.Instance.SetScreenText(string.Format(ANNOUNCEMENT_TEMPLATE, CurrentTargetType), 5);
     }
 
-    public override void End()
+    public override void EndMiniGame()
     {
         throw new NotImplementedException();
     }

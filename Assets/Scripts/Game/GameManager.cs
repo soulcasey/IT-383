@@ -26,7 +26,7 @@ public class GameManager : SingletonBase<GameManager>
 
     private IEnumerator StartNewRound()
     {
-        MinigameType randomMinigame = MinigameType.QuickDraw;
+        MinigameType randomMinigame = (MinigameType)UnityEngine.Random.Range(0, Enum.GetValues(typeof(MinigameType)).Length);
         ActiveMinigame = (Minigame)gameObject.AddComponent(Type.GetType(randomMinigame.ToString()));
 
         GunType[] guns = Enum.GetValues(typeof(GunType)).Cast<GunType>().Where(gun => gun != GunType.Launcher).ToArray();
