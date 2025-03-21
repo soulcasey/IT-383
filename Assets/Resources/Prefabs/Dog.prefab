@@ -526,6 +526,7 @@ GameObject:
   - component: {fileID: 8280374512326177101}
   - component: {fileID: 5031857780013705401}
   - component: {fileID: 1058353002802963184}
+  - component: {fileID: 4648121118448502934}
   m_Layer: 0
   m_Name: Dog
   m_TagString: Untagged
@@ -591,7 +592,29 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.37162077
-  m_Height: 0.9782456
+  m_Radius: 0.4361736
+  m_Height: 1.2678608
   m_Direction: 2
-  m_Center: {x: 0, y: 0.49714744, z: 0.06643301}
+  m_Center: {x: 0, y: 0.43259463, z: -0.078374565}
+--- !u!114 &4648121118448502934
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7117986695651601602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43aa03cc0202ad049b099091f7bb5a07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetType: 0
+  maxHealth: 100
+  speed: 1
+  animator: {fileID: 5031857780013705401}
+  movementType: 0
+  targetPosition: {fileID: 0}
+  minX: -2
+  maxX: 2
+  minZ: -2
+  maxZ: 2
