@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
@@ -7,6 +8,7 @@ using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
 public enum GunType
 {
+    None = -1,
     Pistol,
     Sniper,
     Rifle,
@@ -166,5 +168,10 @@ public class Gun : MonoBehaviour
         audioSource.Play();
         grenade = Grenade.Create(damage, muzzle.transform);
         grenade.Launch(launchForce, muzzle.forward);
+    }
+
+    public static void Create(GunType gunType, Vector3 position)
+    {
+        Instantiate(Resources.Load<Gun>("Prefabs/" + gunType.ToString()), position, Quaternion.identity);
     }
 }
