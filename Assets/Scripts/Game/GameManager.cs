@@ -8,7 +8,7 @@ using TMPro;
 public class GameManager : SingletonBase<GameManager>
 {
     public Minigame ActiveMinigame { get; private set; }
-    public GunType ActiveGunType { get; private set; }
+    public GunType ActiveGunType { get; private set; } = GunType.None;
 
     // Screen
     public Screen screen;
@@ -26,11 +26,11 @@ public class GameManager : SingletonBase<GameManager>
 
     private IEnumerator StartNewRound()
     {
-        MinigameType randomMinigame = (MinigameType)UnityEngine.Random.Range(0, Enum.GetValues(typeof(MinigameType)).Length);
+        MinigameType randomMinigame = Logic.GetRandomEnum<MinigameType>();
         ActiveMinigame = (Minigame)gameObject.AddComponent(Type.GetType(randomMinigame.ToString()));
 
-        GunType[] guns = Enum.GetValues(typeof(GunType)).Cast<GunType>().Where(gun => gun != GunType.Launcher).ToArray();
-        ActiveGunType = guns[UnityEngine.Random.Range(0, guns.Length)];
+        // Launcher is a special gun. Do not randomly select it.
+        ActiveGunType = Logic.GetRandomEnum(GunType.Launcher);
     
         screen.SetScreenText(string.Format(NEW_ROUND_ANNOUNCEMENT_TEMPLATE, ActiveMinigame.MinigameType, ActiveGunType), SCREEN_MOVE_DELAY_TIME);
 
@@ -51,7 +51,30 @@ public class GameManager : SingletonBase<GameManager>
     {
         if (ActiveMinigame == null) return;
 
+        MiniGameResult result = ActiveMinigame.Result;
+
+        ActiveMinigame.EndMiniGame();
         Destroy(ActiveMinigame);
         ActiveMinigame = null;
+        ActiveGunType = GunType.None;
+
+        switch (result)
+        {
+            case MiniGameResult.Win:
+            {
+                screen.SetScreenText("You won!", 4);
+                break;
+            }
+            case MiniGameResult.Lose:
+            {
+                screen.SetScreenText("You lost...", 4);
+                break;
+            }
+            case MiniGameResult.Undecided:
+            {
+                screen.SetScreenText("You won!", 4);
+                break;
+            }
+        }
     }
 }
