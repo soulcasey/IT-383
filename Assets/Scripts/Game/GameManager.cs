@@ -9,6 +9,8 @@ public class GameManager : SingletonBase<GameManager>
 {
     public Minigame ActiveMinigame { get; private set; }
     public GunType ActiveGunType { get; private set; } = GunType.None;
+    
+    public AudioSource audioSource;
 
     // Screen
     public Screen screen;
@@ -44,6 +46,8 @@ public class GameManager : SingletonBase<GameManager>
 
         yield return new WaitForSeconds(START_DELAY_TIME);
 
+        Gun.Create(ActiveGunType);
+
         ActiveMinigame.StartMiniGame();
     }
 
@@ -66,15 +70,30 @@ public class GameManager : SingletonBase<GameManager>
                 break;
             }
             case MiniGameResult.Lose:
+            case MiniGameResult.Undecided:
             {
                 screen.SetScreenText("You lost...", 4);
                 break;
             }
-            case MiniGameResult.Undecided:
-            {
-                screen.SetScreenText("You won!", 4);
-                break;
-            }
         }
+    }
+
+    public void PlayMusic(string name)
+    {
+        AudioClip myClip = Resources.Load<AudioClip>(name);
+        if (myClip != null)
+        {
+            audioSource.clip = myClip;
+            audioSource.Play();
+        }
+        else
+        {
+            Debug.LogError("Audio clip not found: " + name);
+        }
+    }
+
+    public void StopMusic()
+    {
+        audioSource.Stop();
     }
 }

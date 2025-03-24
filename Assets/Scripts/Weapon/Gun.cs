@@ -33,6 +33,7 @@ public class Gun : MonoBehaviour
 
     private int grabCount = 0;
 
+    private static readonly Vector3 DEFAULT_SPAWN = new Vector3(0, 1, 0.5f);
     private const int RANGE = 100;
 
     private void Start()
@@ -170,8 +171,26 @@ public class Gun : MonoBehaviour
         grenade.Launch(launchForce, muzzle.forward);
     }
 
-    public static void Create(GunType gunType, Vector3 position)
+    public static List<Gun> Create(GunType gunType, Vector3? position = null)
     {
-        Instantiate(Resources.Load<Gun>("Prefabs/" + gunType.ToString()), position, Quaternion.identity);
+        List<Gun> guns = new List<Gun>();
+        Vector3 spawnPosition = position ?? DEFAULT_SPAWN;
+
+        switch (gunType)
+        {
+            case GunType.Pistol:
+            {
+                guns.Add(Instantiate(Resources.Load<Gun>("Prefabs/" + gunType.ToString()), spawnPosition - new Vector3(0.1f, 0, 0), Quaternion.identity));
+                guns.Add(Instantiate(Resources.Load<Gun>("Prefabs/" + gunType.ToString()), spawnPosition + new Vector3(0.1f, 0, 0), Quaternion.identity));
+                break;
+            }
+            default:
+            {
+                guns.Add(Instantiate(Resources.Load<Gun>("Prefabs/" + gunType.ToString()), spawnPosition, Quaternion.identity));
+                break;
+            }
+        }
+
+        return guns;
     }
 }

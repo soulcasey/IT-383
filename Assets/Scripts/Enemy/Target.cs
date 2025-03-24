@@ -122,18 +122,20 @@ public class Target : MonoBehaviour, IDamageable
         Destroy(gameObject);
     }
 
-    public static Target Create(TargetType targetType, Vector3 position)
+    public static Target Create(TargetType targetType, Vector3 position, float maxHealth = 100)
     {
         string path = PREFAB_DIRECTORY + targetType.ToString();
-        Target prefab = Resources.Load<Target>(path);
+        Target target = Resources.Load<Target>(path);
 
-        if (prefab == null)
+        if (target == null)
         {
             Debug.LogError($"Prefab not found at path: {path}");
             return null;
         }
 
-        return Instantiate(prefab, position, Quaternion.identity);
+        target.maxHealth = maxHealth;
+
+        return Instantiate(target, position, Quaternion.identity);
     }
     
     public void SetBoundary(int minX, int maxX, int minZ, int maxZ)
