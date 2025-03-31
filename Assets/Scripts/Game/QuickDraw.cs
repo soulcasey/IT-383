@@ -21,6 +21,8 @@ public class QuickDraw : Minigame
 
     private Coroutine waitCoroutine;
 
+    public Target target;
+
     private const string ANNOUNCEMENT_WAIT = "Wait for it...";
     private const string ANNOUNCEMENT_WAIT_FAKE = "WAITFORIT!!";
     private const string ANNOUNCEMENT_SHOOT = "SHOOT!!";
@@ -32,6 +34,8 @@ public class QuickDraw : Minigame
     private readonly Vector3 TARGET_SPAWN_POSITION = new Vector3(0, 0.482f, 5.532f);
     private readonly (int min, int max) WAIT_COUNT = new (5, 10);  
     private readonly (float min, float max) GAP_TIME = new (0.5f, 3f); 
+    private static readonly (int min, int max) X_BOUNDARY = (-4, 4);
+    private static readonly (int min, int max) Z_BOUNDARY = (6, 10);
     
     public override void StartMiniGame()
     {
@@ -49,8 +53,9 @@ public class QuickDraw : Minigame
 
         drawQueue.Enqueue(DrawType.Shoot);
 
-        Target target = Target.Create(TargetType.Dog, TARGET_SPAWN_POSITION, 1);
-        target.gameObject.transform.Rotate(0, 180, 0);
+        target = Target.Create(TargetType.Dog, TARGET_SPAWN_POSITION, 1);
+        target.SetBoundary(X_BOUNDARY.min, X_BOUNDARY.max, Z_BOUNDARY.min, Z_BOUNDARY.max);
+        target.movementType = TargetMovement.Loop;
 
         EventManager.Instance.OnTargetDeath += OnTargetDeath;
 
@@ -61,8 +66,12 @@ public class QuickDraw : Minigame
 
     public override void EndMiniGame()
     {
+        if (target != null)
+        {
+            Destroy(target.gameObject);
+            target = null;
+        }
         GameManager.Instance.StopMusic();
-        GameManager.Instance.screen.SetScreenText(Result == MiniGameResult.Win ? "Victory!" : "Game Over", TEXT_DISPLAY_TIME);
     }
 
     private IEnumerator WaitCoroutine()
@@ -88,7 +97,7 @@ public class QuickDraw : Minigame
             drawQueue.Dequeue();
         }
 
-        EndMiniGame();
+        GameManager.Instance.EndCurrentGame();
     }
 
     private void OnTargetDeath(TargetType targetType)
@@ -97,6 +106,6 @@ public class QuickDraw : Minigame
 
         Result = drawQueue.Peek() == DrawType.Shoot ? MiniGameResult.Win : MiniGameResult.Lose;
 
-        EndMiniGame();
+        GameManager.Instance.EndCurrentGame();
     }
 }

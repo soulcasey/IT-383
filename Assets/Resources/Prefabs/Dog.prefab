@@ -608,12 +608,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43aa03cc0202ad049b099091f7bb5a07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetType: 0
+  targetType: 1
   maxHealth: 100
   speed: 1
   animator: {fileID: 5031857780013705401}
   movementType: 0
-  targetPosition: {fileID: 0}
+  targetPosition: {x: 0, y: 0, z: 0}
   minX: -2
   maxX: 2
   minZ: -2

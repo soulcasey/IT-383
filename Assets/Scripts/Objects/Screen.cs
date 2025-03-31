@@ -13,31 +13,77 @@ public class Screen : MonoBehaviour
     private Coroutine moveCoroutine;
     private Coroutine screenTextCoroutine;
     
-    private const float MOVE_SPEED = 1f;
-    private const float BOUDNARY = 0.05f;
+    public const float MOVE_TIME = 1f;
+    public const float SCALE_TIME = 1f;
+    private static readonly Vector3 START_POSITION = new Vector3(0, 1.5f, 4.4f);
+    private static readonly Vector3 END_POSITION = new Vector3(0, 1.5f, 30f);
+    private static readonly (float MIN, float MAX) SCALE = (0.02f, 0.08f);
 
-    public void Move(Vector3 destination, Action onComplete = null)
+    
+    private void Start()
+    {
+        startButton.onClick.AddListener(GameManager.Instance.StartNewRound);
+    }
+
+    public void Move(bool isGameStart, Action isComplete = null)
     {
         if (moveCoroutine != null)
         {
             StopCoroutine(moveCoroutine);
         }
 
-       moveCoroutine = StartCoroutine(MoveCoroutine(destination, onComplete));
+       moveCoroutine = StartCoroutine(MoveAndScale(isGameStart, isComplete));
     }
 
-    private IEnumerator MoveCoroutine(Vector3 destination, Action onComplete = null)
+    private IEnumerator MoveAndScale(bool isGameStart, Action isComplete = null)
     {
-        while (Vector3.Distance(transform.position, destination) >= BOUDNARY)
+        if (isGameStart)
         {
-            transform.position += MOVE_SPEED * Time.deltaTime * (destination - transform.position).normalized;
+            yield return MoveCoroutine(END_POSITION);
+            yield return ScaleCoroutine(SCALE.MAX);
+        }
+        else
+        {
+            yield return ScaleCoroutine(SCALE.MIN);
+            yield return MoveCoroutine(START_POSITION);
+        }
 
+        isComplete?.Invoke();
+    }
+
+    private IEnumerator MoveCoroutine(Vector3 destination)
+    {
+        Vector3 initialPosition = transform.position;
+
+        float elapsedTime = 0f;
+
+        // First, move to the target position over MOVE_TIME
+        while (elapsedTime < MOVE_TIME)
+        {
+            float t = elapsedTime / MOVE_TIME;
+            transform.position = Vector3.Lerp(initialPosition, destination, t);
+            elapsedTime += Time.deltaTime;
             yield return null;
         }
 
         transform.position = destination;
+    }
 
-        onComplete?.Invoke();
+    private IEnumerator ScaleCoroutine(float scale)
+    {
+        Vector3 initialScale = transform.localScale;
+        Vector3 targetScale = Vector3.one * scale;
+
+        float elapsedTime = 0f;
+        while (elapsedTime < SCALE_TIME)
+        {
+            float t = elapsedTime / SCALE_TIME;
+            transform.localScale = Vector3.Lerp(initialScale, targetScale, t);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        transform.localScale = targetScale;
     }
 
     

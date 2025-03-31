@@ -148,7 +148,6 @@ public class Gun : MonoBehaviour
         if (Physics.Raycast(muzzle.position, muzzle.forward, out RaycastHit hit, RANGE))
         {
             Debug.DrawLine(muzzle.position, hit.point, Color.red, 0.1f);
-            Debug.Log("Hit: " + hit.collider.name);
             trail.AddPosition(hit.point);
 
             if (hit.collider.TryGetComponent(out IDamageable damageable) == true)

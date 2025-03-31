@@ -7,7 +7,7 @@ public enum TargetType
 {
     Default,
     Dog,
-    Bird
+    Sparrow
 }
 
 public enum TargetMovement
@@ -74,8 +74,6 @@ public class Target : MonoBehaviour, IDamageable
             case TargetMovement.Loop:
                 animator.Play("Run");
 
-                Debug.Log(Vector3.Distance(transform.position, targetPosition));
-
                 if (Vector3.Distance(transform.position, targetPosition) < DISTANCE_THREADHOLD)
                 {
                     float randomX = UnityEngine.Random.Range(minX, maxX);
@@ -133,7 +131,11 @@ public class Target : MonoBehaviour, IDamageable
             return null;
         }
 
+        target.targetType = targetType;
+
         target.maxHealth = maxHealth;
+
+        target.targetPosition = position;
 
         return Instantiate(target, position, Quaternion.identity);
     }
