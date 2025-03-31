@@ -3,7 +3,7 @@
 * If you win the minigame, another random minigame will be selected with increasing difficulty. If you lose, the game is over.
 * Player's goal is proceed to as many rounds as possible
 
-### Story/Narrative
+### Interfaces
 * There is only 1 interface for the game: the Screen object
 * A button is avaialble to start the game.
 * Afterwards, the Screen is used to display the current status of the game, such as remaining time, current score, etc.
