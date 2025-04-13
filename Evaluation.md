@@ -12,13 +12,14 @@
 * Mobile VR Station: https://www.youtube.com/watch?v=RkgtWU5WqUY
 
 ### Evaluation Strategies
-User specific questions
+User Specific Questions
 * Do you have prior experience with VR games? (Yes / No)
 * Do you play a lot of shooting games? (Yes / No)
 * On a scale of 1 to 10, how comfortable are you with using VR controls?
 * What type of games do you usually enjoy? (e.g., FPS, RPG, Puzzle, etc.)
 * Do you experience motion sickness while using VR? (Never / Sometimes / Often)
-Game specific questions
+  
+Game Specific Questions
 * Do you find the gun interactions to be natural? (Yes / No)
 * On a scale of 1 to 10, how realistic did the weapon handling feel?
 * Were you able to aim and shoot accurately? (Yes / No)
@@ -26,3 +27,14 @@ Game specific questions
 * Do you find the game to be balanced in terms of difficulty? (Yes / No)
 * Would you play this game again? (Yes / No)
 * What would you improve or change in the game? (Open-ended)
+
+### Procedure
+1. User Specific Questions
+* The user will begin by answering a set of user-specific questions to assess their background in gaming and VR experience.
+
+2. App Testing Session
+* The user will then test the VR game.
+* Each game session will be short, so depending on the user's interest, they may choose to play up to three times.
+
+3. Game Specific Questions
+* After completing the gameplay session, the user will answer a set of game-specific questions to evaluate their experience and provide feedback
