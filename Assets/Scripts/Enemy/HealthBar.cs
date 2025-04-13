@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class HealthBar : MonoBehaviour
 {
     public Image bar;
-    private const float HEALTHBAR_Y_OFFSET = 0.8f;
+    private const float HEALTHBAR_Y_OFFSET = 1f;
     private const string PREFAB_DIRECTORY = "Prefabs/HealthBar";
 
     public static HealthBar Create(Transform transform)

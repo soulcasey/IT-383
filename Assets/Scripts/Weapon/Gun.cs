@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
@@ -7,6 +8,7 @@ using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
 public enum GunType
 {
+    None = -1,
     Pistol,
     Sniper,
     Rifle,
@@ -31,6 +33,7 @@ public class Gun : MonoBehaviour
 
     private int grabCount = 0;
 
+    private static readonly Vector3 DEFAULT_SPAWN = new Vector3(0, 1, 0.5f);
     private const int RANGE = 100;
 
     private void Start()
@@ -145,7 +148,6 @@ public class Gun : MonoBehaviour
         if (Physics.Raycast(muzzle.position, muzzle.forward, out RaycastHit hit, RANGE))
         {
             Debug.DrawLine(muzzle.position, hit.point, Color.red, 0.1f);
-            Debug.Log("Hit: " + hit.collider.name);
             trail.AddPosition(hit.point);
 
             if (hit.collider.TryGetComponent(out IDamageable damageable) == true)
@@ -166,5 +168,28 @@ public class Gun : MonoBehaviour
         audioSource.Play();
         grenade = Grenade.Create(damage, muzzle.transform);
         grenade.Launch(launchForce, muzzle.forward);
+    }
+
+    public static List<Gun> Create(GunType gunType, Vector3? position = null)
+    {
+        List<Gun> guns = new List<Gun>();
+        Vector3 spawnPosition = position ?? DEFAULT_SPAWN;
+
+        switch (gunType)
+        {
+            case GunType.Pistol:
+            {
+                guns.Add(Instantiate(Resources.Load<Gun>("Prefabs/" + gunType.ToString()), spawnPosition - new Vector3(0.1f, 0, 0), Quaternion.identity));
+                guns.Add(Instantiate(Resources.Load<Gun>("Prefabs/" + gunType.ToString()), spawnPosition + new Vector3(0.1f, 0, 0), Quaternion.identity));
+                break;
+            }
+            default:
+            {
+                guns.Add(Instantiate(Resources.Load<Gun>("Prefabs/" + gunType.ToString()), spawnPosition, Quaternion.identity));
+                break;
+            }
+        }
+
+        return guns;
     }
 }
