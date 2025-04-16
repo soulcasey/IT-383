@@ -4,7 +4,7 @@ public enum MinigameType
 {
     ShootAnimal,
     // FastTargetShooting,
-    // MemoryShoot,
+    MemoryShoot,
     QuickDraw
 }
 
