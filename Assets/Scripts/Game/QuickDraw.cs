@@ -20,9 +20,7 @@ public class QuickDraw : Minigame
     private Queue<DrawType> drawQueue = new Queue<DrawType>();
 
     private Coroutine waitCoroutine;
-
-    public Target target;
-
+    
     private const string ANNOUNCEMENT_WAIT = "Wait for it...";
     private const string ANNOUNCEMENT_WAIT_FAKE = "WAITFORIT!!";
     private const string ANNOUNCEMENT_SHOOT = "SHOOT!!";
@@ -53,9 +51,11 @@ public class QuickDraw : Minigame
 
         drawQueue.Enqueue(DrawType.Shoot);
 
-        target = Target.Create(TargetType.Dog, TARGET_SPAWN_POSITION, 1);
+        Target target = Target.Create(TargetType.Dog, TARGET_SPAWN_POSITION, 1);
         target.SetBoundary(X_BOUNDARY.min, X_BOUNDARY.max, Z_BOUNDARY.min, Z_BOUNDARY.max);
-        target.movementType = TargetMovement.Loop;
+        target.status = TargetStatus.Loop;
+
+        targets.Add(target);
 
         EventManager.Instance.OnTargetDeath += OnTargetDeath;
 
@@ -66,12 +66,17 @@ public class QuickDraw : Minigame
 
     public override void EndMiniGame()
     {
-        if (target != null)
-        {
-            Destroy(target.gameObject);
-            target = null;
-        }
         GameManager.Instance.StopMusic();
+        Result = drawQueue.Peek() == DrawType.Shoot ? MiniGameResult.Win : MiniGameResult.Lose;
+
+        foreach (var target in targets)
+        {
+            target.canHit = false;
+            if (Result == MiniGameResult.Lose && target.status != TargetStatus.Death)
+            {
+                target.status = TargetStatus.Mock;
+            }
+        }
     }
 
     private IEnumerator WaitCoroutine()
@@ -103,8 +108,6 @@ public class QuickDraw : Minigame
     private void OnTargetDeath(TargetType targetType)
     {
         StopCoroutine(waitCoroutine);
-
-        Result = drawQueue.Peek() == DrawType.Shoot ? MiniGameResult.Win : MiniGameResult.Lose;
 
         GameManager.Instance.EndCurrentGame();
     }

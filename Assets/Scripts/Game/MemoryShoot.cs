@@ -12,12 +12,11 @@ public enum MemoryResult
 }
 
 
-public class MomoryShoot : Minigame
+public class MemoryShoot : Minigame
 {
-    public override MinigameType MinigameType => MinigameType.QuickDraw;
+    public override MinigameType MinigameType => MinigameType.MemoryShoot;
 
     private List<TargetType> targetOrder = new List<TargetType>();
-    public List<Target> targets = new List<Target>();
     public List<MemoryResult> memoryResults = new List<MemoryResult>();
     private int targetKillCount = 0;
     private Coroutine timeCoroutine;
@@ -37,8 +36,8 @@ public class MomoryShoot : Minigame
 
         StartCoroutine(DisplayTargets(() => 
         {
-            
             EventManager.Instance.OnTargetDeath += OnTargetDeath;
+            SpawnTargets();
             timeCoroutine = StartCoroutine(TimeCoroutine());
         }));
     }
@@ -57,7 +56,7 @@ public class MomoryShoot : Minigame
                 Target target = Target.Create(targetType, new Vector3(randomX, 0, randomZ), 10);
                 targets.Add(target);
                 target.SetBoundary(X_BOUNDARY.min, X_BOUNDARY.max, Z_BOUNDARY.min, Z_BOUNDARY.max);
-                target.movementType = TargetMovement.Loop;
+                target.status = TargetStatus.Loop;
             }
         }
     }
@@ -101,15 +100,13 @@ public class MomoryShoot : Minigame
     {
         StopCoroutine(timeCoroutine);
 
-        foreach (Target target in targets)
-        {
-            if (target != null)
-            {
-                Destroy(target.gameObject);
-            }
-        }
+        Result = memoryResults.All(result => result == MemoryResult.Correct) ? MiniGameResult.Win : MiniGameResult.Lose;
 
-        Result = memoryResults.All(result => result == MemoryResult.Correct)  ? MiniGameResult.Win : MiniGameResult.Lose;
+        foreach (var target in targets)
+        {
+            target.canHit = false;
+            target.status = Result == MiniGameResult.Lose ? TargetStatus.Mock : TargetStatus.Idle;
+        }
     }
 
     private void OnTargetDeath(TargetType targetType)
@@ -124,9 +121,9 @@ public class MomoryShoot : Minigame
         targetKillCount ++;
         DisplayScreen();
 
-        if (result == MemoryResult.Wrong)
+        if (result == MemoryResult.Wrong || memoryResults.All(result => result == MemoryResult.Correct))
         {
-            EndMiniGame();
+            GameManager.Instance.EndCurrentGame();
         }
     }
 }

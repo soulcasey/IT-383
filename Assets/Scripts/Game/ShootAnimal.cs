@@ -10,7 +10,6 @@ public class ShootAnimal : Minigame
     public TargetType CurrentTargetType { get; private set; } = TargetType.Default;
     public int Score { get; private set; } = 0;
     private int time = 0;
-    public List<Target> targets = new List<Target>();
 
     private Coroutine timeCoroutine;
     private Coroutine spawnLoopCoroutine;
@@ -60,7 +59,7 @@ public class ShootAnimal : Minigame
             Target target = Target.Create(randomTargetType, new Vector3(randomX, 0, randomZ), 10);
             targets.Add(target);
             target.SetBoundary(X_BOUNDARY.min, X_BOUNDARY.max, Z_BOUNDARY.min, Z_BOUNDARY.max);
-            target.movementType = TargetMovement.Loop;
+            target.status = TargetStatus.Loop;
         }
     }
 
@@ -93,15 +92,12 @@ public class ShootAnimal : Minigame
         StopCoroutine(spawnLoopCoroutine);
         StopCoroutine(timeCoroutine);
 
-        foreach (Target target in targets)
-        {
-            if (target != null)
-            {
-                Destroy(target.gameObject);
-            }
-        }
-        targets.Clear();
-
         Result = Score >= SCORE_MINIMUM ? MiniGameResult.Win : MiniGameResult.Lose;
+
+        foreach (var target in targets)
+        {
+            target.canHit = false;
+            target.status = Result == MiniGameResult.Lose ? TargetStatus.Mock : TargetStatus.Idle;
+        }
     }
 }

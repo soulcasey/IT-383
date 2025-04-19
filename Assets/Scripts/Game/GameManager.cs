@@ -30,7 +30,7 @@ public class GameManager : SingletonBase<GameManager>
 
     private IEnumerator StartRoundCoroutine()
     {
-        MinigameType randomMinigame = Logic.GetRandomEnum<MinigameType>();
+        MinigameType randomMinigame = ActiveMinigame == null ? Logic.GetRandomEnum<MinigameType>() : Logic.GetRandomEnum(ActiveMinigame.MinigameType) ;
         ActiveMinigame = (Minigame)gameObject.AddComponent(Type.GetType(randomMinigame.ToString()));
 
         // Launcher is a special gun. Do not randomly select it.
@@ -71,6 +71,8 @@ public class GameManager : SingletonBase<GameManager>
     {     
         MiniGameResult result = ActiveMinigame.Result;
 
+        yield return new WaitForSeconds(2);
+
         screen.SetScreenText("", 100);
 
         bool isMoveComplete = false;
@@ -92,6 +94,7 @@ public class GameManager : SingletonBase<GameManager>
                     Destroy(gun.gameObject);
                 }
                 guns.Clear();
+                ActiveMinigame.Clear();
 
                 CurrentRound ++;
 
@@ -111,7 +114,7 @@ public class GameManager : SingletonBase<GameManager>
                     Destroy(gun.gameObject);
                 }
                 guns.Clear();
-                
+                ActiveMinigame.Clear();
                 Destroy(ActiveMinigame);
                 ActiveMinigame = null;
                 ActiveGunType = GunType.None;

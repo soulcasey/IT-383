@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Unity.Mathematics;
 using UnityEngine;
@@ -10,10 +11,12 @@ public enum TargetType
     Sparrow
 }
 
-public enum TargetMovement
+public enum TargetStatus
 {
     Idle,
     Loop,
+    Death,
+    Mock,
 }
 
 public class Target : MonoBehaviour, IDamageable
@@ -21,11 +24,14 @@ public class Target : MonoBehaviour, IDamageable
     public TargetType targetType;
     public float maxHealth = 100f;
     public float speed = 1f;
+
+    public bool canHit = true;
+
     [SerializeField]
     private Animator animator;
 
     [Header("Movement")]
-    public TargetMovement movementType = TargetMovement.Idle;
+    public TargetStatus status = TargetStatus.Idle;
     public Vector3 targetPosition;
     public float minX;
     public float maxX;
@@ -65,13 +71,13 @@ public class Target : MonoBehaviour, IDamageable
 
     private void Update()
     {
-        switch (movementType)
+        switch (status)
         {
-            case TargetMovement.Idle:
+            case TargetStatus.Idle:
                 animator.Play("Idle_A");
                 break;
 
-            case TargetMovement.Loop:
+            case TargetStatus.Loop:
                 animator.Play("Run");
 
                 if (Vector3.Distance(transform.position, targetPosition) < DISTANCE_THREADHOLD)
@@ -86,12 +92,21 @@ public class Target : MonoBehaviour, IDamageable
 
                 transform.position += move;
                 break;
+            case TargetStatus.Mock:
+                animator.Play("Spin");
+                break;
+            case TargetStatus.Death:
+                animator.Play("Death");
+                break;
         }
     }
 
     public void OnHit(float damage)
     {
-        currentHealth -= damage;
+        if (canHit == false) return;
+
+        currentHealth = Mathf.Max(0, currentHealth - damage);
+
         healthBar.gameObject.SetActive(true);
         healthBar.UpdateBar(currentHealth / maxHealth);
 
@@ -116,9 +131,18 @@ public class Target : MonoBehaviour, IDamageable
 
     private void Death()
     {
+        canHit = false;
+        status = TargetStatus.Death;
         EventManager.Instance.TargetDeath(targetType);
-        Destroy(gameObject);
+        StartCoroutine(PlayDeathAnimation());
     }
+
+    private IEnumerator PlayDeathAnimation()
+    {
+        yield return new WaitForSeconds(0.8f);
+        gameObject.SetActive(false);
+    }
+
 
     public static Target Create(TargetType targetType, Vector3 position, float maxHealth = 100)
     {
