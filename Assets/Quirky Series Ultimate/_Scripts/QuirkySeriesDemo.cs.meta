@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 4f49c26b24ab2384582a5dd5c760cfde
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 178235
+  packageName: Free Animals - Quirky Series
+  packageVersion: 1.4
+  assetPath: Assets/Quirky Series Ultimate/_Scripts/QuirkySeriesDemo.cs
+  uploadId: 580081

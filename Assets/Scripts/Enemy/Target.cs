@@ -8,7 +8,10 @@ public enum TargetType
 {
     Default,
     Dog,
-    Sparrow
+    Sparrow,
+    Snake,
+    Fish,
+    Monkey,
 }
 
 public enum TargetStatus
@@ -26,8 +29,6 @@ public class Target : MonoBehaviour, IDamageable
     public float speed = 1f;
 
     public bool canHit = true;
-
-    [SerializeField]
     private Animator animator;
 
     [Header("Movement")]
@@ -50,6 +51,8 @@ public class Target : MonoBehaviour, IDamageable
 
     private void Start()
     {
+        animator = GetComponent<Animator>();
+
         currentHealth = maxHealth;
         healthBar = HealthBar.Create(transform);
         healthBar.gameObject.SetActive(false);
