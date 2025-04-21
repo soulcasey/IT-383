@@ -21,7 +21,7 @@ public class MemoryShoot : Minigame
     private int targetKillCount = 0;
     private Coroutine timeCoroutine;
     private int time = 0;
-    private const int TARGET_COUNT = 6;
+    private const int TARGET_COUNT = 5;
     private const int TIME_SECONDS = 40;
     private static readonly (int min, int max) X_BOUNDARY = (-4, 4);
     private static readonly (int min, int max) Z_BOUNDARY = (6, 10);
@@ -30,7 +30,7 @@ public class MemoryShoot : Minigame
     {
         while (targetOrder.Count < TARGET_COUNT)
         {
-            targetOrder.Add(Logic.GetRandomEnum(exceptions: TargetType.Default));
+            targetOrder.Add(Logic.GetRandomEnum<TargetType>());
             memoryResults.Add(MemoryResult.Unknown);
         }
 
@@ -47,16 +47,14 @@ public class MemoryShoot : Minigame
         for(int i = 0; i < TARGET_COUNT; i ++)
         {
             foreach (TargetType targetType in Enum.GetValues(typeof(TargetType)))
-            {
-                if (targetType == TargetType.Default) continue;
-                
+            {   
                 float randomX = UnityEngine.Random.Range(X_BOUNDARY.min, X_BOUNDARY.max);
                 float randomZ = UnityEngine.Random.Range(Z_BOUNDARY.min, Z_BOUNDARY.max);
 
                 Target target = Target.Create(targetType, new Vector3(randomX, 0, randomZ), 10);
                 targets.Add(target);
                 target.SetBoundary(X_BOUNDARY.min, X_BOUNDARY.max, Z_BOUNDARY.min, Z_BOUNDARY.max);
-                target.status = TargetStatus.Loop;
+                target.status = TargetStatus.Walk;
             }
         }
     }

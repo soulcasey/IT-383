@@ -2,35 +2,47 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 // TODO: Set spawn boundary
 public class ShootAnimal : Minigame
 {
     public override MinigameType MinigameType => MinigameType.ShootAnimal;
-    public TargetType CurrentTargetType { get; private set; } = TargetType.Default;
+    public TargetType CurrentTargetType { get; private set; }
     public int Score { get; private set; } = 0;
+    public int Life { get; private set; } = 4;
     private int time = 0;
 
     private Coroutine timeCoroutine;
     private Coroutine spawnLoopCoroutine;
 
-
-    private const string ANNOUNCEMENT_TEMPLATE = "Target the {0}!";
-    private const int TIME_SECONDS = 40;
-    private static readonly (float min, float max) SPAWN_INTERVAL_TIME = (0.2f, 1.5f);
-    private const int SCORE_MINIMUM = 10;
+    private const int TIME_SECONDS = 30;
+    private const float SPAWN_INTERVAL = 0.2f;
+    private const int TARGET_COUNT_MAIN = 8;
+    private const int TARGET_COUNT_OTHER = 12;
 
     private static readonly (int min, int max) X_BOUNDARY = (-4, 4);
     private static readonly (int min, int max) Z_BOUNDARY = (6, 10);
-    
+
     public override void StartMiniGame()
+    {   
+        CurrentTargetType = Logic.GetRandomEnum<TargetType>();
+
+        StartCoroutine(DisplayTargets(() => 
+        {
+            EventManager.Instance.OnTargetDeath += OnTargetDeath;
+            timeCoroutine = StartCoroutine(TimeCoroutine());
+            spawnLoopCoroutine = StartCoroutine(SpawnLoopCoroutine());
+        }));
+    }
+
+    private IEnumerator DisplayTargets(Action onComplete)
     {
-        CurrentTargetType = Logic.GetRandomEnum(TargetType.Default);
+        GameManager.Instance.screen.SetScreenText($"Shoot all {CurrentTargetType} without hitting others!", 3.5f);
 
-        EventManager.Instance.OnTargetDeath += OnTargetDeath;
+        yield return new WaitForSeconds(4);
 
-        timeCoroutine = StartCoroutine(TimeCoroutine());
-        spawnLoopCoroutine = StartCoroutine(SpawnLoopCoroutine());
+        onComplete.Invoke();
     }
 
     private IEnumerator TimeCoroutine()
@@ -46,26 +58,37 @@ public class ShootAnimal : Minigame
 
     private IEnumerator SpawnLoopCoroutine()
     {
-        while(true)
+        List<TargetType> targetTypes = new List<TargetType>();
+
+        for (int i = 0; i < TARGET_COUNT_MAIN; i ++)
         {
-            float randomInterval = UnityEngine.Random.Range(SPAWN_INTERVAL_TIME.min, SPAWN_INTERVAL_TIME.max);
-            TargetType randomTargetType = Logic.GetRandomEnum(TargetType.Default);
+            targetTypes.Add(CurrentTargetType);
+        }
+
+        for (int i = 0; i < TARGET_COUNT_OTHER; i ++)
+        {
+            targetTypes.Add(Logic.GetRandomEnum(exceptions: CurrentTargetType));
+        }
+
+        Logic.Shuffle(targetTypes);
+
+        foreach (TargetType targetType in targetTypes)
+        {
             float randomX = UnityEngine.Random.Range(X_BOUNDARY.min, X_BOUNDARY.max);
             float randomZ = UnityEngine.Random.Range(Z_BOUNDARY.min, Z_BOUNDARY.max);
             
+            yield return new WaitForSeconds(SPAWN_INTERVAL);
 
-            yield return new WaitForSeconds(randomInterval);
-
-            Target target = Target.Create(randomTargetType, new Vector3(randomX, 0, randomZ), 10);
+            Target target = Target.Create(targetType, new Vector3(randomX, 0, randomZ), 10);
             targets.Add(target);
             target.SetBoundary(X_BOUNDARY.min, X_BOUNDARY.max, Z_BOUNDARY.min, Z_BOUNDARY.max);
-            target.status = TargetStatus.Loop;
+            target.status = TargetStatus.Walk;
         }
     }
 
     private void DisplayScreen()
     {
-        string text = string.Format($"{ANNOUNCEMENT_TEMPLATE}\n", CurrentTargetType) + "\n" + $"Time: {time}" + "\n" + $"Score: {Score}";
+        string text = $"Time: {time}\nScore: {Score}/{TARGET_COUNT_MAIN}\nLife: {Life}";
         GameManager.Instance.screen.SetScreenText(text, 5);
     }
 
@@ -75,13 +98,19 @@ public class ShootAnimal : Minigame
 
         if (targetType == CurrentTargetType)
         {
-            Debug.Log("Target killed! +1");
             Score ++;
+            if (Score >= TARGET_COUNT_MAIN)
+            {
+                GameManager.Instance.EndCurrentGame();
+            }
         }
         else
         {
-            Debug.Log("Wrong target... -1");
-            if (Score > 0) Score --;
+            Life --;
+            if (Life <= 0)
+            {
+                GameManager.Instance.EndCurrentGame();
+            }
         }
 
         DisplayScreen();
@@ -92,7 +121,7 @@ public class ShootAnimal : Minigame
         StopCoroutine(spawnLoopCoroutine);
         StopCoroutine(timeCoroutine);
 
-        Result = Score >= SCORE_MINIMUM ? MiniGameResult.Win : MiniGameResult.Lose;
+        Result = Score == TARGET_COUNT_MAIN ? MiniGameResult.Win : MiniGameResult.Lose;
 
         foreach (var target in targets)
         {

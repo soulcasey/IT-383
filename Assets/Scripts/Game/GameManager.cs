@@ -19,7 +19,7 @@ public class GameManager : SingletonBase<GameManager>
 
     // Screen
     public Screen screen;
-    private const string NEW_ROUND_ANNOUNCEMENT_TEMPLATE = "Minigame: {0}";
+    private const string NEW_ROUND_ANNOUNCEMENT_TEMPLATE = "Minigame:\n{0}";
     private const float SCREEN_DISPLAY_TIME = 4f;
     private const float START_DELAY_TIME = 0.5f;
 
@@ -39,7 +39,19 @@ public class GameManager : SingletonBase<GameManager>
         screen.SetScreenText($"Round {CurrentRound}", SCREEN_DISPLAY_TIME);
 
         yield return new WaitForSeconds(SCREEN_DISPLAY_TIME);
-    
+
+        MinigameType[] allMinigames = (MinigameType[])Enum.GetValues(typeof(MinigameType));
+        float delay = 0.1f;
+        int spinCycles = UnityEngine.Random.Range(7,11);
+        int totalSteps = spinCycles * allMinigames.Length + Array.IndexOf(allMinigames, randomMinigame);
+
+        for (int i = 0; i <= totalSteps; i++)
+        {
+            MinigameType tempType = allMinigames[i % allMinigames.Length];
+            screen.SetScreenText(string.Format(NEW_ROUND_ANNOUNCEMENT_TEMPLATE, tempType), delay);
+            yield return new WaitForSeconds(delay);
+        }
+
         screen.SetScreenText(string.Format(NEW_ROUND_ANNOUNCEMENT_TEMPLATE, ActiveMinigame.MinigameType), SCREEN_DISPLAY_TIME);
 
         yield return new WaitForSeconds(SCREEN_DISPLAY_TIME);

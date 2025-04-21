@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 
@@ -51,9 +52,9 @@ public class QuickDraw : Minigame
 
         drawQueue.Enqueue(DrawType.Shoot);
 
-        Target target = Target.Create(TargetType.Dog, TARGET_SPAWN_POSITION, 1);
+        Target target = Target.Create(Logic.GetRandomEnum<TargetType>(), TARGET_SPAWN_POSITION, 1);
         target.SetBoundary(X_BOUNDARY.min, X_BOUNDARY.max, Z_BOUNDARY.min, Z_BOUNDARY.max);
-        target.status = TargetStatus.Loop;
+        target.status = TargetStatus.Walk;
 
         targets.Add(target);
 
@@ -67,7 +68,7 @@ public class QuickDraw : Minigame
     public override void EndMiniGame()
     {
         GameManager.Instance.StopMusic();
-        Result = drawQueue.Peek() == DrawType.Shoot ? MiniGameResult.Win : MiniGameResult.Lose;
+        Result = drawQueue.TryPeek(out DrawType drawtype) == true && drawtype == DrawType.Shoot ? MiniGameResult.Win : MiniGameResult.Lose;
 
         foreach (var target in targets)
         {
@@ -95,7 +96,16 @@ public class QuickDraw : Minigame
 
             GameManager.Instance.screen.SetScreenText(displayText, TEXT_DISPLAY_TIME);
 
-            float gapTime = currentDrawType == DrawType.Shoot ? COUNTDOWN_TIME : TEXT_DISPLAY_TIME + UnityEngine.Random.Range(GAP_TIME.min, GAP_TIME.max);
+            float gapTime;
+            if (currentDrawType == DrawType.Shoot)
+            {
+                gapTime = COUNTDOWN_TIME;
+                targets.First().status = TargetStatus.Roll;
+            }
+            else
+            {
+                gapTime = TEXT_DISPLAY_TIME + UnityEngine.Random.Range(GAP_TIME.min, GAP_TIME.max);
+            }
 
             yield return new WaitForSeconds(gapTime);
 

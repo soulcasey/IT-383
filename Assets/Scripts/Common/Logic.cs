@@ -22,4 +22,15 @@ public static class Logic
 
         return values[random.Next(values.Count)];
     }
+
+    public static void Shuffle<T>(this IList<T> list)
+    {
+        int n = list.Count;
+        while (n > 1)
+        {
+            n--;
+            int k = random.Next(n + 1); // 0 to n
+            (list[n], list[k]) = (list[k], list[n]); // swap
+        }
+    }
 }

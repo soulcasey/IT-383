@@ -6,7 +6,6 @@ using UnityEngine;
 
 public enum TargetType
 {
-    Default,
     Dog,
     Sparrow,
     Snake,
@@ -17,7 +16,8 @@ public enum TargetType
 public enum TargetStatus
 {
     Idle,
-    Loop,
+    Walk,
+    Roll,
     Death,
     Mock,
 }
@@ -26,7 +26,6 @@ public class Target : MonoBehaviour, IDamageable
 {
     public TargetType targetType;
     public float maxHealth = 100f;
-    public float speed = 1f;
 
     public bool canHit = true;
     private Animator animator;
@@ -79,21 +78,13 @@ public class Target : MonoBehaviour, IDamageable
             case TargetStatus.Idle:
                 animator.Play("Idle_A");
                 break;
-
-            case TargetStatus.Loop:
+            case TargetStatus.Walk:
                 animator.Play("Run");
-
-                if (Vector3.Distance(transform.position, targetPosition) < DISTANCE_THREADHOLD)
-                {
-                    float randomX = UnityEngine.Random.Range(minX, maxX);
-                    float randomZ = UnityEngine.Random.Range(minZ, maxZ);
-                    targetPosition = new Vector3(randomX, transform.position.y, randomZ);
-                }
-
-                transform.rotation = Quaternion.LookRotation((targetPosition - transform.position).normalized);
-                Vector3 move = speed * Time.deltaTime * transform.forward;
-
-                transform.position += move;
+                WalkLoop(1);
+                break;
+            case TargetStatus.Roll:
+                animator.Play("Roll");
+                WalkLoop(2);
                 break;
             case TargetStatus.Mock:
                 animator.Play("Spin");
@@ -102,6 +93,21 @@ public class Target : MonoBehaviour, IDamageable
                 animator.Play("Death");
                 break;
         }
+    }
+
+    private void WalkLoop(float speed)
+    {
+        if (Vector3.Distance(transform.position, targetPosition) < DISTANCE_THREADHOLD)
+        {
+            float randomX = UnityEngine.Random.Range(minX, maxX);
+            float randomZ = UnityEngine.Random.Range(minZ, maxZ);
+            targetPosition = new Vector3(randomX, transform.position.y, randomZ);
+        }
+
+        transform.rotation = Quaternion.LookRotation((targetPosition - transform.position).normalized);
+        Vector3 move = speed * Time.deltaTime * transform.forward;
+
+        transform.position += move;
     }
 
     public void OnHit(float damage)
