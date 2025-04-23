@@ -83,11 +83,13 @@ public class Tutorial : MonoBehaviour
         {
             Destroy(target.gameObject);
         }
+        targets.Clear();
 
         foreach (Gun gun in guns)
         {
             Destroy(gun.gameObject);
         }
+        guns.Clear();
 
         StartCoroutine(EndTutorialCoroutine());
     }
