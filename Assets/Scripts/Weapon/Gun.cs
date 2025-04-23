@@ -33,7 +33,6 @@ public class Gun : MonoBehaviour
 
     public int GrabCount { get; private set; }= 0;
 
-    public static readonly Vector3 DEFAULT_SPAWN = new Vector3(0, 1, 0.5f);
     private const int RANGE = 100;
 
     private void Start()
@@ -173,19 +172,32 @@ public class Gun : MonoBehaviour
     public static List<Gun> Create(GunType gunType, Vector3? position = null)
     {
         List<Gun> guns = new List<Gun>();
-        Vector3 spawnPosition = position ?? DEFAULT_SPAWN;
+        Vector3 spawnPosition;
+        Quaternion rotationAway = Quaternion.LookRotation(Camera.main.transform.forward);
+
+        if (position == null)
+        {
+            spawnPosition = Camera.main.transform.position + Camera.main.transform.forward.normalized * 0.8f;
+            spawnPosition.y = 1f;
+        }
+        else
+        {
+            spawnPosition = (Vector3)position;
+        }
 
         switch (gunType)
         {
             case GunType.Pistol:
             {
-                guns.Add(Instantiate(Resources.Load<Gun>("Prefabs/" + gunType.ToString()), spawnPosition - new Vector3(0.1f, 0, 0), Quaternion.identity));
-                guns.Add(Instantiate(Resources.Load<Gun>("Prefabs/" + gunType.ToString()), spawnPosition + new Vector3(0.1f, 0, 0), Quaternion.identity));
+                Vector3 gap = Camera.main.transform.right.normalized * 0.1f;
+
+                guns.Add(Instantiate(Resources.Load<Gun>("Prefabs/" + gunType.ToString()), spawnPosition - gap, rotationAway));
+                guns.Add(Instantiate(Resources.Load<Gun>("Prefabs/" + gunType.ToString()), spawnPosition + gap, rotationAway));
                 break;
             }
             default:
             {
-                guns.Add(Instantiate(Resources.Load<Gun>("Prefabs/" + gunType.ToString()), spawnPosition, Quaternion.identity));
+                guns.Add(Instantiate(Resources.Load<Gun>("Prefabs/" + gunType.ToString()), spawnPosition, rotationAway));
                 break;
             }
         }

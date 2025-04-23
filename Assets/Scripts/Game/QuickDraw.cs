@@ -61,20 +61,9 @@ public class QuickDraw : Minigame
         StartCoroutine(WaitCoroutine());
     }
 
-    public override void EndMiniGame()
+    public override MiniGameResult GetResult()
     {
-        StopAllCoroutines();
-        GameManager.Instance.StopMusic();
-        Result = drawQueue.TryPeek(out DrawType drawtype) == true && drawtype == DrawType.Shoot ? MiniGameResult.Win : MiniGameResult.Lose;
-
-        foreach (var target in targets)
-        {
-            target.canHit = false;
-            if (Result == MiniGameResult.Lose && target.status != TargetStatus.Death)
-            {
-                target.status = TargetStatus.Mock;
-            }
-        }
+        return drawQueue.TryPeek(out DrawType drawtype) == true && drawtype == DrawType.Shoot ? MiniGameResult.Win : MiniGameResult.Lose;
     }
 
     private IEnumerator WaitCoroutine()

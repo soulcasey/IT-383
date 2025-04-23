@@ -19,7 +19,6 @@ public class GameManager : SingletonBase<GameManager>
     public Screen screen;
     private const string NEW_ROUND_ANNOUNCEMENT_TEMPLATE = "Minigame:\n{0}";
     private const float SCREEN_DISPLAY_TIME = 4f;
-    private const float START_DELAY_TIME = 0.5f;
 
     public void StartNewRound()
     {
@@ -66,7 +65,7 @@ public class GameManager : SingletonBase<GameManager>
 
     private IEnumerator EndRoundCoroutine()
     {     
-        MiniGameResult result = activeMiniGame.Result;
+        MiniGameResult result = activeMiniGame.GetResult();
 
         screen.SetScreenText("", 0.5f);
 
@@ -89,7 +88,6 @@ public class GameManager : SingletonBase<GameManager>
                 break;
             }
             case MiniGameResult.Lose:
-            case MiniGameResult.Undecided:
             {
                 screen.SetScreenText("You lost...", SCREEN_DISPLAY_TIME);
 

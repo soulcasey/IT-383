@@ -4,14 +4,12 @@ using UnityEngine;
 public enum MinigameType
 {
     ShootAnimal,
-    // FastTargetShooting,
     MemoryShoot,
     QuickDraw
 }
 
 public enum MiniGameResult
 {
-    Undecided,
     Win,
     Lose
 }
@@ -19,7 +17,6 @@ public enum MiniGameResult
 public abstract class Minigame : MonoBehaviour
 {
     public abstract MinigameType MinigameType { get; }
-    public MiniGameResult Result { get; protected set; } = MiniGameResult.Undecided;
     public List<Target> targets = new List<Target>();
     public List<Gun> guns = new List<Gun>();
 
@@ -29,7 +26,23 @@ public abstract class Minigame : MonoBehaviour
         guns.AddRange(Gun.Create(gunType));
     }
 
-    public abstract void EndMiniGame();
+    public virtual void EndMiniGame()
+    {
+        GameManager.Instance.StopMusic();
+        StopAllCoroutines();
+
+        foreach (var target in targets)
+        {
+            if (target.status == TargetStatus.Death)
+            {
+                continue;
+            }
+            target.canHit = false;
+            target.status = GetResult() == MiniGameResult.Lose ? TargetStatus.Mock : TargetStatus.Idle;
+        }
+    }
+
+    public abstract MiniGameResult GetResult();
 
     public void Clear()
     {

@@ -15,8 +15,8 @@ public class ShootAnimal : Minigame
 
     private const int TIME_SECONDS = 30;
     private const float SPAWN_INTERVAL = 0.2f;
-    private const int TARGET_COUNT_MAIN = 8;
-    private const int TARGET_COUNT_OTHER = 12;
+    private const int TARGET_COUNT_MAIN = 10;
+    private const int TARGET_COUNT_OTHER = 20;
 
 
     public override void StartMiniGame()
@@ -86,8 +86,6 @@ public class ShootAnimal : Minigame
 
     private void OnTargetDeath(TargetType targetType)
     {
-        Debug.LogWarning(targetType + " " + CurrentTargetType);    
-
         if (targetType == CurrentTargetType)
         {
             Score ++;
@@ -108,16 +106,8 @@ public class ShootAnimal : Minigame
         DisplayScreen();
     }
 
-    public override void EndMiniGame()
+    public override MiniGameResult GetResult()
     {
-        StopAllCoroutines();
-
-        Result = Score == TARGET_COUNT_MAIN ? MiniGameResult.Win : MiniGameResult.Lose;
-
-        foreach (var target in targets)
-        {
-            target.canHit = false;
-            target.status = Result == MiniGameResult.Lose ? TargetStatus.Mock : TargetStatus.Idle;
-        }
+        return Score == TARGET_COUNT_MAIN ? MiniGameResult.Win : MiniGameResult.Lose;
     }
 }

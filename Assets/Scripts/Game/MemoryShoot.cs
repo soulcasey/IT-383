@@ -20,7 +20,7 @@ public class MemoryShoot : Minigame
     public List<MemoryResult> memoryResults = new List<MemoryResult>();
     private int targetKillCount = 0;
     private int time = 0;
-    private const int TARGET_COUNT = 5;
+    private const int TARGET_COUNT = 4;
     private const int TIME_SECONDS = 40;
     
     public override void StartMiniGame()
@@ -93,17 +93,9 @@ public class MemoryShoot : Minigame
         GameManager.Instance.EndCurrentGame();
     }
 
-    public override void EndMiniGame()
+    public override MiniGameResult GetResult()
     {
-        StopAllCoroutines();
-
-        Result = memoryResults.All(result => result == MemoryResult.Correct) ? MiniGameResult.Win : MiniGameResult.Lose;
-
-        foreach (var target in targets)
-        {
-            target.canHit = false;
-            target.status = Result == MiniGameResult.Lose ? TargetStatus.Mock : TargetStatus.Idle;
-        }
+        return memoryResults.All(result => result == MemoryResult.Correct) ? MiniGameResult.Win : MiniGameResult.Lose;
     }
 
     private void OnTargetDeath(TargetType targetType)
