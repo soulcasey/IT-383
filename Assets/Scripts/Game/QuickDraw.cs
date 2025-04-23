@@ -49,7 +49,9 @@ public class QuickDraw : Minigame
 
         drawQueue.Enqueue(DrawType.Shoot);
 
-        Target target = Target.Create(Logic.GetRandomEnum<TargetType>(), maxHealth: 1);
+        Vector3 spawnPosition =  spawnPosition = Camera.main.transform.forward.normalized * 7f;
+        spawnPosition.y = 0f;
+        Target target = Target.Create(Logic.GetRandomEnum<TargetType>(), position: spawnPosition, maxHealth: 1);
         target.status = TargetStatus.Walk;
 
         targets.Add(target);
