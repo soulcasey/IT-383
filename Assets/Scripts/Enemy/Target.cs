@@ -48,7 +48,7 @@ public class Target : MonoBehaviour, IDamageable
     private const string PREFAB_DIRECTORY = "Prefabs/";
     private const float DISTANCE_THREADHOLD = 0.2f;
 
-    private static readonly (int min, int max) BOUNDARY = (-9, 9);
+    private static readonly (int min, int max) BOUNDARY = (-8, 8);
 
     private void Start()
     {

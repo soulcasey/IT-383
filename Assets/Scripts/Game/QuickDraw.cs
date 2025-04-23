@@ -68,9 +68,9 @@ public class QuickDraw : Minigame
 
     private IEnumerator WaitCoroutine()
     {
-        GameManager.Instance.screen.SetScreenText("Wait for the moment... don't shoot yet", 3.5f);
+        GameManager.Instance.screen.SetScreenText("Wait for the moment... don't shoot yet", 4f);
 
-        yield return new WaitForSeconds(4);
+        yield return new WaitForSeconds(4.5f);
 
         while (drawQueue.Count > 0)
         {

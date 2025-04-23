@@ -10,7 +10,7 @@ public class ShootAnimal : Minigame
     public override MinigameType MinigameType => MinigameType.ShootAnimal;
     public TargetType CurrentTargetType { get; private set; }
     public int Score { get; private set; } = 0;
-    public int Life { get; private set; } = 4;
+    public int Life { get; private set; } = 3;
     private int time = 0;
 
     private const int TIME_SECONDS = 30;
@@ -34,7 +34,7 @@ public class ShootAnimal : Minigame
 
     private IEnumerator DisplayTargets(Action onComplete)
     {
-        GameManager.Instance.screen.SetScreenText($"Eliminate all {CurrentTargetType} without hitting others!", 3.5f);
+        GameManager.Instance.screen.SetScreenText($"Eliminate all {CurrentTargetType} without eliminating others!", 3.5f);
 
         yield return new WaitForSeconds(4);
 

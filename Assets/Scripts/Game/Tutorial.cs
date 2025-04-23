@@ -31,7 +31,7 @@ public class Tutorial : MonoBehaviour
         List<Gun> pistols = Gun.Create(GunType.Pistol);
         guns.AddRange(pistols);
         yield return new WaitUntil(() => pistols.All(pistol => pistol.GrabCount == 1));
-        GameManager.Instance.screen.SetScreenText("Shoot at a target to eliminate it.", 999f);
+        GameManager.Instance.screen.SetScreenText("Shoot a target to eliminate it.", 999f);
         foreach (Target target in targets)
         {
             target.canHit = true;
@@ -42,11 +42,11 @@ public class Tutorial : MonoBehaviour
             target.canHit = false;
         }
 
-        GameManager.Instance.screen.SetScreenText("Grab the sniper with both hands.\nGrab the handle first with right hand, then the handguard with left hand.", 999f);
+        GameManager.Instance.screen.SetScreenText("Grab the sniper handle with right hand, then the handguard with left hand.", 999f);
         Gun sniper = Gun.Create(GunType.Sniper).First();
         guns.Add(sniper);
         yield return new WaitUntil(() => sniper.GrabCount == 2);
-        GameManager.Instance.screen.SetScreenText("Shoot at a target to eliminate it.", 999f);
+        GameManager.Instance.screen.SetScreenText("Shoot a target to eliminate it.", 999f);
         foreach (Target target in targets)
         {
             target.canHit = true;
@@ -57,11 +57,11 @@ public class Tutorial : MonoBehaviour
             target.canHit = false;
         }
 
-        GameManager.Instance.screen.SetScreenText("Grab the rifle with both hands.\nnGrab the handle first with right hand, then the handguard with left hand.", 999f);
+        GameManager.Instance.screen.SetScreenText("Grab the rifle handle with right hand, then the handguard with left hand.", 999f);
         Gun rifle = Gun.Create(GunType.Rifle).First();
         guns.Add(rifle);
         yield return new WaitUntil(() => rifle.GrabCount == 2);
-        GameManager.Instance.screen.SetScreenText("Shoot at a target to eliminate it.", 999f);
+        GameManager.Instance.screen.SetScreenText("Shoot a target to eliminate it.", 999f);
         foreach (Target target in targets)
         {
             target.canHit = true;
