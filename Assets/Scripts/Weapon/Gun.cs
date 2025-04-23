@@ -31,9 +31,9 @@ public class Gun : MonoBehaviour
     private bool canShoot = true;
     private Grenade grenade;
 
-    private int grabCount = 0;
+    public int GrabCount { get; private set; }= 0;
 
-    private static readonly Vector3 DEFAULT_SPAWN = new Vector3(0, 1, 0.5f);
+    public static readonly Vector3 DEFAULT_SPAWN = new Vector3(0, 1, 0.5f);
     private const int RANGE = 100;
 
     private void Start()
@@ -46,12 +46,12 @@ public class Gun : MonoBehaviour
 
     private void OnGrabStarted(SelectEnterEventArgs args)
     {
-        grabCount ++;
+        GrabCount ++;
     }
 
     private void OnGrabEnded(SelectExitEventArgs args)
     {
-        grabCount --;
+        GrabCount --;
 
         if (fireCoroutine != null)
         {
@@ -110,7 +110,7 @@ public class Gun : MonoBehaviour
 
     private bool IsGrabCount()
     {
-        return gunType == GunType.Pistol ? grabCount == 1 : grabCount == 2;
+        return gunType == GunType.Pistol ? GrabCount == 1 : GrabCount == 2;
     }
 
     private void OnGunDeactivated(DeactivateEventArgs args)

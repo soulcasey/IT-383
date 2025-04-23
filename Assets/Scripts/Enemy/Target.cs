@@ -48,6 +48,8 @@ public class Target : MonoBehaviour, IDamageable
     private const string PREFAB_DIRECTORY = "Prefabs/";
     private const float DISTANCE_THREADHOLD = 0.2f;
 
+    private static readonly (int min, int max) BOUNDARY = (-9, 9);
+
     private void Start()
     {
         animator = GetComponent<Animator>();
@@ -99,9 +101,7 @@ public class Target : MonoBehaviour, IDamageable
     {
         if (Vector3.Distance(transform.position, targetPosition) < DISTANCE_THREADHOLD)
         {
-            float randomX = UnityEngine.Random.Range(minX, maxX);
-            float randomZ = UnityEngine.Random.Range(minZ, maxZ);
-            targetPosition = new Vector3(randomX, transform.position.y, randomZ);
+            targetPosition = GetRandomPosition();
         }
 
         transform.rotation = Quaternion.LookRotation((targetPosition - transform.position).normalized);
@@ -153,7 +153,7 @@ public class Target : MonoBehaviour, IDamageable
     }
 
 
-    public static Target Create(TargetType targetType, Vector3 position, float maxHealth = 100)
+    public static Target Create(TargetType targetType, Vector3? position = null, float maxHealth = 10)
     {
         string path = PREFAB_DIRECTORY + targetType.ToString();
         Target target = Resources.Load<Target>(path);
@@ -168,16 +168,16 @@ public class Target : MonoBehaviour, IDamageable
 
         target.maxHealth = maxHealth;
 
-        target.targetPosition = position;
+        target.targetPosition = position != null ? (Vector3)position : target.GetRandomPosition();
 
-        return Instantiate(target, position, Quaternion.identity);
+        return Instantiate(target, target.targetPosition, Quaternion.identity);
     }
-    
-    public void SetBoundary(int minX, int maxX, int minZ, int maxZ)
+
+    private Vector3 GetRandomPosition()
     {
-        this.minX = minX;
-        this.maxX = maxX;
-        this.minZ = minZ;
-        this.maxZ = maxZ;
+        return new Vector3(
+            UnityEngine.Random.Range(BOUNDARY.min, BOUNDARY.max + 1),
+            0,
+            UnityEngine.Random.Range(BOUNDARY.min, BOUNDARY.max + 1));
     }
 }

@@ -13,32 +13,28 @@ public class ShootAnimal : Minigame
     public int Life { get; private set; } = 4;
     private int time = 0;
 
-    private Coroutine timeCoroutine;
-    private Coroutine spawnLoopCoroutine;
-
     private const int TIME_SECONDS = 30;
     private const float SPAWN_INTERVAL = 0.2f;
     private const int TARGET_COUNT_MAIN = 8;
     private const int TARGET_COUNT_OTHER = 12;
 
-    private static readonly (int min, int max) X_BOUNDARY = (-4, 4);
-    private static readonly (int min, int max) Z_BOUNDARY = (6, 10);
 
     public override void StartMiniGame()
     {   
+        base.StartMiniGame();
         CurrentTargetType = Logic.GetRandomEnum<TargetType>();
 
         StartCoroutine(DisplayTargets(() => 
         {
             EventManager.Instance.OnTargetDeath += OnTargetDeath;
-            timeCoroutine = StartCoroutine(TimeCoroutine());
-            spawnLoopCoroutine = StartCoroutine(SpawnLoopCoroutine());
+            StartCoroutine(TimeCoroutine());
+            StartCoroutine(SpawnLoopCoroutine());
         }));
     }
 
     private IEnumerator DisplayTargets(Action onComplete)
     {
-        GameManager.Instance.screen.SetScreenText($"Shoot all {CurrentTargetType} without hitting others!", 3.5f);
+        GameManager.Instance.screen.SetScreenText($"Eliminate all {CurrentTargetType} without hitting others!", 3.5f);
 
         yield return new WaitForSeconds(4);
 
@@ -74,14 +70,10 @@ public class ShootAnimal : Minigame
 
         foreach (TargetType targetType in targetTypes)
         {
-            float randomX = UnityEngine.Random.Range(X_BOUNDARY.min, X_BOUNDARY.max);
-            float randomZ = UnityEngine.Random.Range(Z_BOUNDARY.min, Z_BOUNDARY.max);
-            
             yield return new WaitForSeconds(SPAWN_INTERVAL);
 
-            Target target = Target.Create(targetType, new Vector3(randomX, 0, randomZ), 10);
+            Target target = Target.Create(targetType);
             targets.Add(target);
-            target.SetBoundary(X_BOUNDARY.min, X_BOUNDARY.max, Z_BOUNDARY.min, Z_BOUNDARY.max);
             target.status = TargetStatus.Walk;
         }
     }
@@ -118,8 +110,7 @@ public class ShootAnimal : Minigame
 
     public override void EndMiniGame()
     {
-        StopCoroutine(spawnLoopCoroutine);
-        StopCoroutine(timeCoroutine);
+        StopAllCoroutines();
 
         Result = Score == TARGET_COUNT_MAIN ? MiniGameResult.Win : MiniGameResult.Lose;
 

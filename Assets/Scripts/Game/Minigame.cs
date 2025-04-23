@@ -21,8 +21,14 @@ public abstract class Minigame : MonoBehaviour
     public abstract MinigameType MinigameType { get; }
     public MiniGameResult Result { get; protected set; } = MiniGameResult.Undecided;
     public List<Target> targets = new List<Target>();
+    public List<Gun> guns = new List<Gun>();
 
-    public abstract void StartMiniGame();
+    public virtual void StartMiniGame()
+    {
+        GunType gunType = Logic.GetRandomEnum(GunType.Launcher, GunType.None);
+        guns.AddRange(Gun.Create(gunType));
+    }
+
     public abstract void EndMiniGame();
 
     public void Clear()
@@ -30,6 +36,11 @@ public abstract class Minigame : MonoBehaviour
         foreach (var target in targets)
         {
             Destroy(target.gameObject);
+        }
+
+        foreach (Gun gun in guns)
+        {
+            Destroy(gun.gameObject);
         }
     }
 }

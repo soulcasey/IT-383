@@ -19,15 +19,14 @@ public class MemoryShoot : Minigame
     private List<TargetType> targetOrder = new List<TargetType>();
     public List<MemoryResult> memoryResults = new List<MemoryResult>();
     private int targetKillCount = 0;
-    private Coroutine timeCoroutine;
     private int time = 0;
     private const int TARGET_COUNT = 5;
     private const int TIME_SECONDS = 40;
-    private static readonly (int min, int max) X_BOUNDARY = (-4, 4);
-    private static readonly (int min, int max) Z_BOUNDARY = (6, 10);
     
     public override void StartMiniGame()
     {
+        base.StartMiniGame();
+
         while (targetOrder.Count < TARGET_COUNT)
         {
             targetOrder.Add(Logic.GetRandomEnum<TargetType>());
@@ -38,7 +37,7 @@ public class MemoryShoot : Minigame
         {
             EventManager.Instance.OnTargetDeath += OnTargetDeath;
             SpawnTargets();
-            timeCoroutine = StartCoroutine(TimeCoroutine());
+            StartCoroutine(TimeCoroutine());
         }));
     }
 
@@ -48,12 +47,8 @@ public class MemoryShoot : Minigame
         {
             foreach (TargetType targetType in Enum.GetValues(typeof(TargetType)))
             {   
-                float randomX = UnityEngine.Random.Range(X_BOUNDARY.min, X_BOUNDARY.max);
-                float randomZ = UnityEngine.Random.Range(Z_BOUNDARY.min, Z_BOUNDARY.max);
-
-                Target target = Target.Create(targetType, new Vector3(randomX, 0, randomZ), 10);
+                Target target = Target.Create(targetType);
                 targets.Add(target);
-                target.SetBoundary(X_BOUNDARY.min, X_BOUNDARY.max, Z_BOUNDARY.min, Z_BOUNDARY.max);
                 target.status = TargetStatus.Walk;
             }
         }
@@ -61,6 +56,10 @@ public class MemoryShoot : Minigame
 
     private IEnumerator DisplayTargets(Action onComplete)
     {
+        GameManager.Instance.screen.SetScreenText("Remember the order of the animals, then eliminate them in that order!", 3.5f);
+
+        yield return new WaitForSeconds(4);
+
         foreach (TargetType targetType in targetOrder)
         {
             GameManager.Instance.screen.SetScreenText(targetType.ToString(), 1);
@@ -96,7 +95,7 @@ public class MemoryShoot : Minigame
 
     public override void EndMiniGame()
     {
-        StopCoroutine(timeCoroutine);
+        StopAllCoroutines();
 
         Result = memoryResults.All(result => result == MemoryResult.Correct) ? MiniGameResult.Win : MiniGameResult.Lose;
 

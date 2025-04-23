@@ -8,14 +8,12 @@ using System.Collections.Generic;
 
 public class GameManager : SingletonBase<GameManager>
 {
-    public Minigame ActiveMinigame { get; private set; }
-    public GunType ActiveGunType { get; private set; } = GunType.None;
-
+    public Minigame activeMiniGame;
     public int CurrentRound { get; private set; } = 1;
+
+    public Tutorial tutorial;
     
     public AudioSource audioSource;
-
-    public List<Gun> guns = new List<Gun>();
 
     // Screen
     public Screen screen;
@@ -30,11 +28,8 @@ public class GameManager : SingletonBase<GameManager>
 
     private IEnumerator StartRoundCoroutine()
     {
-        MinigameType randomMinigame = ActiveMinigame == null ? Logic.GetRandomEnum<MinigameType>() : Logic.GetRandomEnum(ActiveMinigame.MinigameType) ;
-        ActiveMinigame = (Minigame)gameObject.AddComponent(Type.GetType(randomMinigame.ToString()));
-
-        // Launcher is a special gun. Do not randomly select it.
-        ActiveGunType = Logic.GetRandomEnum(GunType.Launcher, GunType.None);
+        MinigameType randomMinigame = activeMiniGame == null ? Logic.GetRandomEnum<MinigameType>() : Logic.GetRandomEnum(activeMiniGame.MinigameType) ;
+        activeMiniGame = (Minigame)gameObject.AddComponent(Type.GetType(randomMinigame.ToString()));
 
         screen.SetScreenText($"Round {CurrentRound}", SCREEN_DISPLAY_TIME);
 
@@ -52,28 +47,18 @@ public class GameManager : SingletonBase<GameManager>
             yield return new WaitForSeconds(delay);
         }
 
-        screen.SetScreenText(string.Format(NEW_ROUND_ANNOUNCEMENT_TEMPLATE, ActiveMinigame.MinigameType), SCREEN_DISPLAY_TIME);
+        screen.SetScreenText(string.Format(NEW_ROUND_ANNOUNCEMENT_TEMPLATE, activeMiniGame.MinigameType), SCREEN_DISPLAY_TIME);
 
         yield return new WaitForSeconds(SCREEN_DISPLAY_TIME);
 
-        bool isMoveComplete = false;
-
-        screen.Move(true, () => isMoveComplete = true);
-
-        yield return new WaitUntil(() => isMoveComplete == true);
-
-        yield return new WaitForSeconds(START_DELAY_TIME);
-
-        guns = Gun.Create(ActiveGunType);
-
-        ActiveMinigame.StartMiniGame();
+        activeMiniGame.StartMiniGame();
     }
 
     public void EndCurrentGame()
     {
-        if (ActiveMinigame == null) return;
+        if (activeMiniGame == null) return;
 
-        ActiveMinigame.EndMiniGame(); 
+        activeMiniGame.EndMiniGame(); 
         EventManager.Instance.ClearEvents();
 
         StartCoroutine(EndRoundCoroutine());
@@ -81,17 +66,11 @@ public class GameManager : SingletonBase<GameManager>
 
     private IEnumerator EndRoundCoroutine()
     {     
-        MiniGameResult result = ActiveMinigame.Result;
+        MiniGameResult result = activeMiniGame.Result;
 
-        yield return new WaitForSeconds(2);
+        screen.SetScreenText("", 0.5f);
 
-        screen.SetScreenText("", 100);
-
-        bool isMoveComplete = false;
-
-        screen.Move(false, () => isMoveComplete = true);
-
-        yield return new WaitUntil(() => isMoveComplete == true);
+        yield return new WaitForSeconds(0.5f);
 
         switch (result)
         {
@@ -101,12 +80,7 @@ public class GameManager : SingletonBase<GameManager>
 
                 yield return new WaitForSeconds(SCREEN_DISPLAY_TIME);
 
-                foreach (Gun gun in guns)
-                {
-                    Destroy(gun.gameObject);
-                }
-                guns.Clear();
-                ActiveMinigame.Clear();
+                activeMiniGame.Clear();
 
                 CurrentRound ++;
 
@@ -121,15 +95,9 @@ public class GameManager : SingletonBase<GameManager>
 
                 yield return new WaitForSeconds(SCREEN_DISPLAY_TIME);
 
-                foreach (Gun gun in guns)
-                {
-                    Destroy(gun.gameObject);
-                }
-                guns.Clear();
-                ActiveMinigame.Clear();
-                Destroy(ActiveMinigame);
-                ActiveMinigame = null;
-                ActiveGunType = GunType.None;
+                activeMiniGame.Clear();
+                Destroy(activeMiniGame);
+                activeMiniGame = null;
 
                 CurrentRound = 1;
 

@@ -8,7 +8,10 @@ public static class Logic
 
     public static T GetRandomEnum<T>(params T[] exceptions) where T : Enum
     {
-        var values = Enum.GetValues(typeof(T)).Cast<T>().ToList();
+        var values = Enum.GetValues(typeof(T))
+            .Cast<T>()
+            .Where(value => Convert.ToInt32(value) >= 0) // Remove enums with value < 0
+            .ToList();
 
         if (exceptions.Length > 0)
         {
