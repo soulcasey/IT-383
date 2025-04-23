@@ -1040,7 +1040,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &7813769997826685612
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1120,7 +1120,8 @@ MonoBehaviour:
   screenText: {fileID: 2959232313541638660}
   startGameButton: {fileID: 2089930022865459231}
   startTutorialButton: {fileID: 3813620693774627130}
-  endTutorialButton: {fileID: 0}
+  distance: 10
+  fixedY: 0
 --- !u!1 &8591285044584827537
 GameObject:
   m_ObjectHideFlags: 0
