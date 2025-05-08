@@ -10,5 +10,5 @@
 * Young ~ middle age student group
 
 ### Game Synopsis
-* Hyper Arena is a fast-paced multiplayer VR shooter where players compete in dynamic minigame rounds.
+* Hyper Arena is a fast-paced VR shooter where players compete in dynamic minigame rounds.
 * A random minigame will be chosen at the beginning of the game, each with unique ways to earn points.
